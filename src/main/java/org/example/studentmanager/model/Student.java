@@ -1,11 +1,27 @@
 package org.example.studentmanager.model;
 
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "student_entity")
 public class Student {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    int id;
+
+    @Column(name = "student_name")
     private String name;
+    @Column
     private int age;
+    @Column
     private int zipCode;
+    @Column
     private String country;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
     private Status status;
 
     public Student() {
@@ -16,7 +32,7 @@ public class Student {
         this.age = age;
         this.zipCode = zipCode;
         this.country = country;
-        this.status = status;
+        //this.status = status;
     }
 
     public String getName() {

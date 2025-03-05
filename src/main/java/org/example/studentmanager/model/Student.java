@@ -2,6 +2,8 @@ package org.example.studentmanager.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+
 
 @Entity
 @Table(name = "student_entity")
@@ -12,12 +14,20 @@ public class Student {
     int id;
 
     @Column(name = "student_name")
+    @NotEmpty(message = "Name can not be empty")
     private String name;
     @Column
+    @NotNull(message = "Age can not be empty")
+    @Min(value = 18, message = "You have to be at least 18 years old.")
     private int age;
     @Column
+    @Min(value = 0, message = "Zip code can not be smaller then 0")
+    @Max(value = 9999, message = "Zip code can not be greater then 9999")
+    @NotNull(message = "Zip code can not be empty")
+    @Digits(integer = 6, fraction = 0, message = "Zip code is a 6 digits number.")
     private int zipCode;
     @Column
+    @NotEmpty(message = "Country must be specified")
     private String country;
 
     @ManyToOne

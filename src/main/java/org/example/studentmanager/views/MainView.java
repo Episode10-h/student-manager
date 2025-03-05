@@ -3,6 +3,7 @@ package org.example.studentmanager.views;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -12,10 +13,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.Lumo;
 import org.example.studentmanager.model.Status;
 import org.example.studentmanager.model.Student;
 import org.example.studentmanager.services.StudentService;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,9 @@ public class MainView extends VerticalLayout {
 
     private TextField filterField;
 
+    private Checkbox themeToggle;
+    private static boolean isChecked ;
+
     public MainView(StudentService studentService) {
 
         this.studentService = studentService;
@@ -41,7 +47,26 @@ public class MainView extends VerticalLayout {
         loadStudents();
         configureGrid();
 
+
         add(logoLayout, createToolBar() , studentGrid);
+    }
+
+    private Checkbox createToggle() {
+        themeToggle = new Checkbox("Dark Mode");
+        themeToggle.setValue(isChecked);
+        themeToggle.addValueChangeListener(event -> {
+            MainView.isChecked = !isChecked;
+            setTheme(isChecked);
+        });
+
+        return themeToggle;
+    }
+
+    private void setTheme(boolean dark) {
+        var js = MessageFormat.format("""
+                document.documentElement.setAttribute("theme","{0}")""", dark ? Lumo.DARK : Lumo.LIGHT);
+
+        getElement().executeJs(js);
     }
 
     private Component createToolBar() {
@@ -63,7 +88,7 @@ public class MainView extends VerticalLayout {
 
 
 
-                return new HorizontalLayout(filterField, addStudent, removeStudent);
+                return new HorizontalLayout(filterField, addStudent, removeStudent,createToggle());
     }
 
     private void updateStudents() {
